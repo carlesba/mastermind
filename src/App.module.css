@@ -1,27 +1,70 @@
 .App {
-  text-align: center;
-}
-
-.logo {
-  animation: logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.header {
   background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+	width: 100vw;
+	height: 100vh;
+	color: white;
+}
+button {
+	appearance: none;
+	outline: none;
+	padding: 10px;
+	border-radius: 1rem;
+	border: 1px solid white;
+	font-size: 18px;
+	color: white;
+	background: transparent;
 }
 
-.link {
-  color: #b318f0;
+.rank {
+	font-weight: bold;
 }
+
+.sequence{
+	display: flex;
+}
+
+.guess{
+	display: flex;
+}
+
+.piece {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+}
+
+.lead {
+	border-radius: 50%;
+	width: 10px;
+	height: 10px;
+}
+.lead.position {
+	background: red;
+}
+.lead.color {
+	background: white;
+}
+.lead.none {
+	background: grey;
+}
+
+
+.blue {
+	background-color: blue;
+}
+.green {
+	background-color: green;
+}
+.red {
+	background-color: red;
+}
+.yellow {
+	background-color: yellow;
+}
+.cyan {
+	background-color: cyan;
+}
+
 
 @keyframes logo-spin {
   from {

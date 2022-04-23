@@ -11,6 +11,8 @@ import {
 } from "solid-js";
 
 import styles from "./App.module.css";
+import { ALL_COLORS, Choice, Color, Guess, Lead, Line } from "./game/types";
+import { useGame } from "./game/useGame";
 
 const App: Component = () => {
   const game = useGame({ maxAttempts: 10, size: 4 });
@@ -35,109 +37,13 @@ const App: Component = () => {
 
 export default App;
 
-const ALL_COLORS = ["blue", "green", "red", "yellow", "cyan"] as const;
-type Color = typeof ALL_COLORS[number];
-type Choice = Color | "void";
-
-type Lead = {
-  position: number;
-  color: number;
-};
-
-type Guess = Color[];
-type Line = Choice[];
-
-type GameStatus = "idle" | "on" | "lose" | "win";
-
-const getRandomColorIndex = (): number =>
-  Math.floor(Math.random() * ALL_COLORS.length);
-
-const getRandomColor = (): Color => ALL_COLORS[getRandomColorIndex()];
-
-const createGoal = (size: number): Color[] =>
-  Array.from({ length: size }, () => getRandomColor());
-
-const useGame = (params: { size: number; maxAttempts: number }) => {
-  const [goal, setGoal] = createSignal<Color[]>([]);
-  const [attempts, setAttempts] = createSignal<Guess[]>([]);
-  const [leads, setLeads] = createSignal<Lead[]>([]);
-  const [status, setStatus] = createSignal<GameStatus>("idle");
-
-  console.log("[App] state", goal(), leads(), status());
-  const size: Accessor<number> = () => params.size;
-
-  const emptyAttempt = (): Choice[] =>
-    Array.from({ length: params.size }, () => "void");
-
-  const start = () => {
-    const newGoal = createGoal(params.size);
-    setGoal(newGoal);
-    setAttempts([]);
-    setLeads([]);
-    setStatus("on");
-  };
-
-  const submit = (sequence: Color[]) => {
-    let lead: Lead = {
-      position: 0,
-      color: 0,
-    };
-    const usage = Array.from({ length: params.size }, () => false);
-
-    goal().forEach((target, index) => {
-      if (target === sequence[index]) {
-        lead.position += 1;
-        usage[index] = true;
-      }
-    });
-    usage.forEach((used, index) => {
-      if (used) {
-        return;
-      }
-      const target = sequence[index];
-      const indexMatched = goal().findIndex(
-        (color, j) => !usage[j] && color === target
-      );
-      if (indexMatched >= 0) {
-        lead.color += 1;
-        usage[indexMatched] = true;
-      }
-    });
-
-    const attemptsCount = attempts().length;
-
-    console.log("[App] lead, ", lead, goal());
-    if (lead.position === params.size) {
-      setStatus("win");
-    } else if (attemptsCount === params.maxAttempts - 1) {
-      setStatus("lose");
-    }
-    setAttempts((a) => a.concat([sequence]));
-    setLeads((l) => l.concat([lead]));
-  };
-
-  return {
-    start,
-    submit,
-    getLead(index: number): Lead {
-      const lead = leads()[index];
-      return lead || { position: 0, color: 0 };
-    },
-    getAttempt(index: number): Line {
-      const attempt = attempts()[index];
-      return attempt || emptyAttempt();
-    },
-    goal,
-    size,
-    maxAttempts: () => params.maxAttempts,
-    status,
-  };
-};
-
 const GameContext = createContext<ReturnType<typeof useGame>>({
   status: () => "idle",
   start: () => {},
   size: () => 0,
+  select: () => {},
+  deselect: () => {},
+  isSubmitable: () => false,
   submit: () => {},
   goal: () => [],
   getAttempt: () => [],
@@ -239,52 +145,67 @@ const LeadViewer: Component<{
   );
 };
 
-const AttemptForm: Component = () => {
-  const game = useGameContext();
+const useLineEditor = (
+  size: Accessor<number>,
+  onSubmit: (g: Guess) => void
+) => {
   const [editor, setEditor] = createSignal<Guess>([]);
 
-  const line: Accessor<Line> = () =>
-    Array.from(
-      { length: game.size() },
-      (_, index) => editor()[index] || "void"
-    );
-
   const select = (color: Color) =>
-    setEditor((e) => (e.length === game.size() ? e : e.concat(color)));
+    setEditor((e) => (e.length === size() ? e : e.concat(color)));
+
   const deselect = () => setEditor((e) => e.slice(0, -1));
+
   const submit = () => {
-    game.submit(editor());
+    onSubmit(editor());
     setEditor([]);
   };
 
+  return { line: editor, select, deselect, submit };
+};
+
+const AttemptForm: Component = () => {
+  const game = useGameContext();
+	const disabled = game.isSubmitable()
   return (
     <div>
-      <div>
-        <For each={line()}>
-          {(choice) => <ChoiceView value={() => choice} />}
-        </For>
-      </div>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          "align-items": "center",
+          "justify-content": "center",
+          width: "100%",
+        }}
+      >
         <For each={ALL_COLORS}>
           {(color) => (
-            <button
-              onClick={() => select(color)}
-              class={[styles.attempt, styles[color]].join(" ")}
-            >
-              {color}
-            </button>
+            <div>
+              <button
+                style={{
+                  "border-radius": "50%",
+                  width: "10vmin",
+                  height: "10vmin",
+                }}
+                onClick={() => game.select(color)}
+                class={[styles.attempt, styles[color]].join(" ")}
+              />
+            </div>
           )}
         </For>
-        <Switch>
-          <Match when={editor().length === game.size()}>
-            <button onClick={submit}>Submit</button>
-          </Match>
-          <Match when={editor().length < game.size()}>
-            <button disabled={game.size() === 0} onClick={deselect}>
-              Del
-            </button>
-          </Match>
-        </Switch>
+        <button disabled={disabled} onClick={game.submit}>
+          Submit
+        </button>
+        <button onClick={game.deselect}>Delete</button>
+        {/* <Switch> */}
+        {/*   <Match when={editor().length === game.size()}> */}
+        {/*     <button onClick={submit}>Submit</button> */}
+        {/*   </Match> */}
+        {/*   <Match when={editor().length < game.size()}> */}
+        {/*     <button disabled={game.size() === 0} onClick={deselect}> */}
+        {/*       Del */}
+        {/*     </button> */}
+        {/*   </Match> */}
+        {/* </Switch> */}
       </div>
     </div>
   );

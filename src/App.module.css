@@ -14,18 +14,18 @@
   --bg: var(--color-light);
   --fg: var(--color-dark);
 
-  --line-width: 0.1vh;
-  --line-color: #1c1b1fAA;
+  --line-width: 1px;
+  --line-color: #1c1b1faa;
   --line-color-dim: #1c1b1f44;
 
-  --keyboard-height: 28vh;
+  --panel-height: 28vh;
 }
 
 .dark {
   --bg: var(--color-dark);
   --fg: var(--color-light);
 
-  --line-color: #fffefeAA;
+  --line-color: #fffefeaa;
   --line-color-dim: #fffefe44;
 }
 
@@ -44,20 +44,30 @@ header {
   font-weight: bolder;
   height: 10vh;
   border-bottom: var(--line-width) solid var(--line-color-dim);
-	margin-bottom: 2vh;
+  margin-bottom: 2vh;
 }
 
-.keyboard {
+.panel {
   position: fixed;
+  background: var(--bg);
+  height: var(--panel-height);
   bottom: 0;
-  height: var(--keyboard-height);
   width: 100vw;
-  display: grid;
-  grid-template-rows: 2fr 1fr;
-  justify-items: center;
   padding: 4vh 0;
   box-sizing: border-box;
   border-top: var(--line-width) solid var(--line-color-dim);
+  transition: transform 200ms ease;
+}
+.panel.hidden {
+  transform: translateY(var(--panel-height));
+}
+
+.keyboard {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  justify-items: center;
 }
 
 .keylayout {
@@ -75,16 +85,6 @@ header {
   justify-content: center;
 }
 
-.actions button {
-  padding: 3vh 2vh;
-  background: var(--fg);
-  color: var(--bg);
-  border-radius: 2vh;
-  font-size: 2.5vh;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
 button {
   appearance: none;
   outline: none;
@@ -93,6 +93,15 @@ button {
 }
 button:disabled {
   opacity: 0.6;
+}
+button.action {
+  padding: 2vh;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 2vh;
+  font-size: 2.5vh;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .blue {
@@ -121,7 +130,7 @@ button:disabled {
   margin: auto;
   justify-items: center;
   align-items: center;
-  padding-bottom: var(--keyboard-height);
+  padding-bottom: var(--panel-height);
 }
 .board > div:nth-child(5n) {
   justify-self: end;
@@ -144,7 +153,7 @@ button:disabled {
   border-radius: 50%;
   border-style: solid;
   aspect-ratio: 1;
-	transition: all 200ms ease;
+  transition: all 200ms ease;
 }
 
 .circle.void {
@@ -155,6 +164,21 @@ button:disabled {
   border-color: var(--line-color);
 }
 
+.sequence {
+  width: 40vh;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 1vh;
+  margin: auto;
+  justify-items: center;
+  align-items: center;
+	padding: 1vh;
+	border: 1px solid var(--line-color-dim);
+	border-radius: 1vh;
+}
+.sequence .circle {
+  width: 70%;
+}
 .board .circle {
   width: 90%;
 }
@@ -180,3 +204,20 @@ button:disabled {
 .lead.none.active {
   border-color: var(--line-color);
 }
+
+.notification {
+  width: 100%;
+  height: 100%;
+  padding: 0 2vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 3vh;
+}
+.notification p {
+  margin-block-start: 0;
+  margin-block-end: 2vh;
+}
+

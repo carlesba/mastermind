@@ -42,7 +42,7 @@ const GameContext = createContext<ReturnType<typeof useGame>>({
   size: () => 0,
   select: () => {},
   deselect: () => {},
-	isEmpty: () => true,
+  isEmpty: () => true,
   isSubmitable: () => false,
   submit: () => {},
   goal: () => [],
@@ -71,20 +71,15 @@ const Game: Component = () => {
           )}
         </Index>
       </div>
-      <Switch>
-        <Match when={game.status() === "on"}>
-          <Keyboard />
-        </Match>
-        <Match when={game.status() === "win"}>
-          <div>you win!</div>
-        </Match>
-        <Match when={game.status() === "lose"}>
-          <div>you lose!</div>
-          <div>the solution was:</div>
-          <SequenceViewer active={() => false} value={game.goal} />
-          <button onClick={game.start}>start a new game</button>
-        </Match>
-      </Switch>
+      <Panel visible={game.status() === "on"}>
+        <Keyboard />
+      </Panel>
+      <Panel visible={game.status() === "win"}>
+        <WinPanel />
+      </Panel>
+      <Panel visible={game.status() === "lose"}>
+				<LosePanel />
+			</Panel>
     </div>
   );
 };
@@ -168,6 +163,13 @@ const LeadViewer: Component<{
   );
 };
 
+const Panel: Component<{ visible: boolean }> = (props) => {
+  return (
+    <div class={[styles.panel, !props.visible ? styles.hidden : ""].join(" ")}>
+      {props.children}
+    </div>
+  );
+};
 const Keyboard: Component = () => {
   const game = useGameContext();
   return (
@@ -192,12 +194,38 @@ const Keyboard: Component = () => {
         </button>
         <button
           class={[styles.action, styles.delete].join(" ")}
-					disabled={game.isEmpty()}
+          disabled={game.isEmpty()}
           onClick={game.deselect}
         >
           Delete
         </button>
       </div>
+    </div>
+  );
+};
+
+const WinPanel: Component = () => {
+  const game = useGameContext();
+  return (
+    <div class={[styles.notification].join(" ")}>
+      <p>You made it in {game.currentAttempt()}!</p>
+      <button class={styles.action} onClick={game.start}>
+        New Game
+      </button>
+    </div>
+  );
+};
+
+const LosePanel: Component = () => {
+  const game = useGameContext();
+  return (
+    <div class={[styles.notification].join(" ")}>
+      <div class={styles.sequence}>
+        <SequenceViewer active={() => false} value={game.goal} />
+      </div>
+      <button class={styles.action} onClick={game.start}>
+        New Game
+      </button>
     </div>
   );
 };

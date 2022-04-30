@@ -22,7 +22,6 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
   onMount(() => {
     start();
   });
-  console.log("[App] state", goal(), leads(), status());
 
   const size: Accessor<number> = () => params.size;
 
@@ -31,6 +30,7 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
 
   const start = () => {
     const newGoal = createGoal(params.size);
+		console.log('[useGame] newGoal', newGoal)
     setCurrent(0);
     setGoal(newGoal);
     setAttempts([]);
@@ -70,7 +70,6 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
 
     const attemptsCount = attempts().length;
 
-    console.log("[App] lead, ", lead, goal());
     if (lead.position === params.size) {
       setStatus("win");
     } else if (attemptsCount === params.maxAttempts - 1) {

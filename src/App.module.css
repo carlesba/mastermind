@@ -136,7 +136,7 @@ button.action {
   margin: auto;
   justify-items: center;
   align-items: center;
-  padding-top: var(--header-height);
+  padding-top: calc(var(--header-height) + 2vh);
   padding-bottom: var(--panel-height);
 }
 .board > div:nth-child(5n) {

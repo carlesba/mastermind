@@ -16,7 +16,7 @@ import { useGame } from "./game/useGame";
 
 const App: Component = () => {
   const game = useGame({ maxAttempts: 6, size: 4 });
-  const [dark, setDark] = createSignal(false);
+  const [dark, setDark] = createSignal(prefersDarkScheme());
   return (
     <div class={[styles.App, dark() ? styles.dark : ""].join(" ")}>
       <div class={styles.themeToggle} onClick={() => setDark((s) => !s)}>
@@ -40,6 +40,13 @@ const App: Component = () => {
 };
 
 export default App;
+
+const prefersDarkScheme = () => {
+	if (window !== undefined) {
+		return window.matchMedia("(prefers-color-scheme:dark)").matches
+	}
+	return false
+}
 
 const GameContext = createContext<ReturnType<typeof useGame>>({
   status: () => "idle",

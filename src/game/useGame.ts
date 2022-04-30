@@ -30,7 +30,6 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
 
   const start = () => {
     const newGoal = createGoal(params.size);
-		console.log('[useGame] newGoal', newGoal)
     setCurrent(0);
     setGoal(newGoal);
     setAttempts([]);

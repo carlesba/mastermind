@@ -6,18 +6,19 @@
   --key-color-green: hsl(151, 55%, 41.5%);
   --key-color-red: hsl(358, 75%, 59%);
   --key-color-yellow: hsl(53, 92%, 50%);
-  --key-color-orange: hsl(24, 94.0%, 50.0%);
+  --key-color-orange: hsl(24, 94%, 50%);
 
-  --lead-position: hsl(10, 78.0%, 54.0%);
+  --lead-position: hsl(10, 78%, 54%);
   --lead-color: var(--fg);
 
   --bg: var(--color-light);
   --fg: var(--color-dark);
 
-  --line-width: 1px;
+  --line-width: 2px;
   --line-color: #1c1b1faa;
   --line-color-dim: #1c1b1f44;
 
+  --header-height: 10vh;
   --panel-height: 28vh;
 }
 
@@ -37,15 +38,19 @@
   color: var(--fg);
 }
 header {
+  background: var(--bg);
   font-size: 6vh;
   letter-spacing: -0.5vh;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bolder;
-  height: 10vh;
+  height: var(--header-height);
   border-bottom: var(--line-width) solid var(--line-color-dim);
   margin-bottom: 2vh;
+  position: fixed;
+  top: 0;
+  width: 100vw;
 }
 
 .panel {
@@ -131,6 +136,7 @@ button.action {
   margin: auto;
   justify-items: center;
   align-items: center;
+  padding-top: var(--header-height);
   padding-bottom: var(--panel-height);
 }
 .board > div:nth-child(5n) {
@@ -216,7 +222,7 @@ button.action {
   align-items: center;
   justify-content: center;
   font-size: 3vh;
-	font-weight: bold;
+  font-weight: bold;
 }
 .notification p {
   margin-block-start: 0;
@@ -225,9 +231,12 @@ button.action {
 
 .themeToggle {
   position: fixed;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  z-index: 10;
   right: 1vh;
-  top: 3vh;
-  height: 4vh;
+  top: 0;
   width: 4vh;
   opacity: 0.8;
 }

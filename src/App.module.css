@@ -2,13 +2,13 @@
   --color-dark: #1c1b1f;
   --color-light: #fffefe;
 
-  --key-color-blue: blue;
-  --key-color-green: green;
-  --key-color-red: red;
-  --key-color-yellow: yellow;
-  --key-color-cyan: cyan;
+  --key-color-blue: hsl(206, 100%, 50%);
+  --key-color-green: hsl(151, 55%, 41.5%);
+  --key-color-red: hsl(358, 75%, 59%);
+  --key-color-yellow: hsl(53, 92%, 50%);
+  --key-color-cyan: hsl(24, 94.0%, 50.0%);
 
-  --lead-position: red;
+  --lead-position: hsl(10, 78.0%, 54.0%);
   --lead-color: var(--fg);
 
   --bg: var(--color-light);
@@ -216,6 +216,7 @@ button.action {
   align-items: center;
   justify-content: center;
   font-size: 3vh;
+	font-weight: bold;
 }
 .notification p {
   margin-block-start: 0;
@@ -223,15 +224,15 @@ button.action {
 }
 
 .themeToggle {
-	position: fixed;
-	right: 1vh;
-	top: 3vh;
-	height: 4vh;
-	width: 4vh;
-	opacity: 0.8;
+  position: fixed;
+  right: 1vh;
+  top: 3vh;
+  height: 4vh;
+  width: 4vh;
+  opacity: 0.8;
 }
 .themeToggle svg {
-	width: 4vh;
-	aspect-ratio: 1;
+  width: 4vh;
+  aspect-ratio: 1;
   stroke: var(--fg);
 }

@@ -21,6 +21,9 @@
   --header-height: 10vh;
   --panel-height: 28vh;
 }
+* {
+  touch-action: manipulation;
+}
 
 .dark {
   --bg: var(--color-dark);

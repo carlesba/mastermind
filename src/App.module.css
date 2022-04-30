@@ -1,76 +1,182 @@
+:root {
+  --color-dark: #1c1b1f;
+  --color-light: #fffefe;
+
+  --key-color-blue: blue;
+  --key-color-green: green;
+  --key-color-red: red;
+  --key-color-yellow: yellow;
+  --key-color-cyan: cyan;
+
+  --lead-position: red;
+  --lead-color: white;
+
+  --bg: var(--color-light);
+  --fg: var(--color-dark);
+
+  --line-width: 0.1vh;
+  --line-color: #1c1b1fAA;
+  --line-color-dim: #1c1b1f44;
+
+  --keyboard-height: 28vh;
+}
+
+.dark {
+  --bg: var(--color-dark);
+  --fg: var(--color-light);
+
+  --line-color: #fffefeAA;
+  --line-color-dim: #fffefe44;
+}
+
 .App {
-  background-color: #282c34;
-	width: 100vw;
-	height: 100vh;
-	color: white;
+  background-color: var(--bg);
+  width: 100vw;
+  height: 100vh;
+  color: white;
 }
+header {
+  font-size: 8vh;
+  letter-spacing: -0.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+  height: 10vh;
+  border-bottom: var(--line-width) solid var(--line-color-dim);
+	margin-bottom: 2vh;
+}
+
+.keyboard {
+  position: fixed;
+  bottom: 0;
+  height: var(--keyboard-height);
+  width: 100vw;
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  justify-items: center;
+  padding: 4vh 0;
+  box-sizing: border-box;
+  border-top: var(--line-width) solid var(--line-color-dim);
+}
+
+.keylayout {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 1vh;
+  width: 50vh;
+}
+
+.keyboard .actions {
+  width: 50vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 2vh;
+  justify-content: center;
+}
+
+.actions button {
+  padding: 3vh 2vh;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 2vh;
+  font-size: 2.5vh;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 button {
-	appearance: none;
-	outline: none;
-	padding: 10px;
-	border-radius: 1rem;
-	border: 1px solid white;
-	font-size: 18px;
-	color: white;
-	background: transparent;
+  appearance: none;
+  outline: none;
+  padding: 0;
+  border: none;
 }
-
-.rank {
-	font-weight: bold;
+button:disabled {
+  opacity: 0.6;
 }
-
-.sequence{
-	display: flex;
-}
-
-.guess{
-	display: flex;
-}
-
-.piece {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-}
-
-.lead {
-	border-radius: 50%;
-	width: 10px;
-	height: 10px;
-}
-.lead.position {
-	background: red;
-}
-.lead.color {
-	background: white;
-}
-.lead.none {
-	background: grey;
-}
-
 
 .blue {
-	background-color: blue;
+  color: var(--key-color-blue);
 }
 .green {
-	background-color: green;
+  color: var(--key-color-green);
 }
 .red {
-	background-color: red;
+  color: var(--key-color-red);
 }
 .yellow {
-	background-color: yellow;
+  color: var(--key-color-yellow);
 }
 .cyan {
-	background-color: cyan;
+  color: var(--key-color-cyan);
 }
 
+/** Viewer */
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.board {
+  width: 50vh;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 1.3fr;
+  row-gap: 1vh;
+  margin: auto;
+  justify-items: center;
+  align-items: center;
+  padding-bottom: var(--keyboard-height);
+}
+.board > div:nth-child(5n) {
+  justify-self: end;
+}
+
+.leads {
+  height: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  justify-items: center;
+  align-items: center;
+}
+
+.circle {
+  border-width: var(--line-width);
+  background-color: currentColor;
+  border-color: currentColor;
+  border-radius: 50%;
+  border-style: solid;
+  aspect-ratio: 1;
+	transition: all 200ms ease;
+}
+
+.circle.void {
+  color: var(--bg);
+  border-color: var(--line-color-dim);
+}
+.circle.void.active {
+  border-color: var(--line-color);
+}
+
+.board .circle {
+  width: 90%;
+}
+.leads .circle {
+  width: 70%;
+}
+
+.lead.position {
+  border-color: var(--lead-position);
+  background: var(--lead-position);
+}
+
+.lead.color {
+  border-color: var(--lead-color);
+  background: var(--lead-color);
+}
+
+.lead.none {
+  border-color: var(--line-color-dim);
+  background: var(--bg);
+}
+
+.lead.none.active {
+  border-color: var(--line-color);
 }

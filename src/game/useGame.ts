@@ -83,10 +83,12 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
   };
 
   return {
+		currentAttempt: current,
     start,
     select: lineEditor.select,
     deselect: lineEditor.deselect,
-    isSubmitable: () => lineEditor.value().length === params.size,
+    isSubmitable: lineEditor.ready,
+		isEmpty: lineEditor.empty,
     submit,
     getLead(index: number): Lead {
       const lead = leads()[index];
@@ -124,7 +126,10 @@ const useLineEditor = (size: number) => {
     setEditor([]);
   };
 
-  return { value: editor, select, deselect, clear };
+	const ready = () => editor().length === size
+	const empty = () => editor().length === 0
+
+  return { value: editor, select, deselect, clear, ready, empty };
 };
 
 const getRandomColorIndex = (): number =>

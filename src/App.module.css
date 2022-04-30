@@ -6,7 +6,7 @@
   --key-color-green: hsl(151, 55%, 41.5%);
   --key-color-red: hsl(358, 75%, 59%);
   --key-color-yellow: hsl(53, 92%, 50%);
-  --key-color-cyan: hsl(24, 94.0%, 50.0%);
+  --key-color-orange: hsl(24, 94.0%, 50.0%);
 
   --lead-position: hsl(10, 78.0%, 54.0%);
   --lead-color: var(--fg);
@@ -117,8 +117,8 @@ button.action {
 .yellow {
   color: var(--key-color-yellow);
 }
-.cyan {
-  color: var(--key-color-cyan);
+.orange {
+  color: var(--key-color-orange);
 }
 
 /** Viewer */

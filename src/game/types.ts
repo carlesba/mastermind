@@ -1,4 +1,4 @@
-export const ALL_COLORS = ["blue", "green", "red", "yellow", "cyan"] as const;
+export const ALL_COLORS = ["blue", "green", "red", "yellow", "orange"] as const;
 
 export type Color = typeof ALL_COLORS[number];
 export type Choice = Color | "void";

@@ -9,7 +9,7 @@
   --key-color-cyan: cyan;
 
   --lead-position: red;
-  --lead-color: white;
+  --lead-color: var(--fg);
 
   --bg: var(--color-light);
   --fg: var(--color-dark);
@@ -24,6 +24,7 @@
 .dark {
   --bg: var(--color-dark);
   --fg: var(--color-light);
+  --lead-color: var(--fg);
 
   --line-color: #fffefeaa;
   --line-color-dim: #fffefe44;
@@ -33,10 +34,10 @@
   background-color: var(--bg);
   width: 100vw;
   height: 100vh;
-  color: white;
+  color: var(--fg);
 }
 header {
-  font-size: 8vh;
+  font-size: 6vh;
   letter-spacing: -0.5vh;
   display: flex;
   align-items: center;
@@ -172,9 +173,9 @@ button.action {
   margin: auto;
   justify-items: center;
   align-items: center;
-	padding: 1vh;
-	border: 1px solid var(--line-color-dim);
-	border-radius: 1vh;
+  padding: 1vh;
+  border: 1px solid var(--line-color-dim);
+  border-radius: 1vh;
 }
 .sequence .circle {
   width: 70%;
@@ -221,3 +222,16 @@ button.action {
   margin-block-end: 2vh;
 }
 
+.themeToggle {
+	position: fixed;
+	right: 1vh;
+	top: 3vh;
+	height: 4vh;
+	width: 4vh;
+	opacity: 0.8;
+}
+.themeToggle svg {
+	width: 4vh;
+	aspect-ratio: 1;
+  stroke: var(--fg);
+}

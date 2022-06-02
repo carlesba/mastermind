@@ -42,11 +42,11 @@ const App: Component = () => {
 export default App;
 
 const prefersDarkScheme = () => {
-  if (window !== undefined) {
-    return window.matchMedia("(prefers-color-scheme:dark)").matches;
-  }
-  return false;
-};
+	if (window !== undefined) {
+		return window.matchMedia("(prefers-color-scheme:dark)").matches
+	}
+	return false
+}
 
 const GameContext = createContext<ReturnType<typeof useGame>>({
   status: () => "idle",
@@ -69,37 +69,32 @@ const useGameContext = () => useContext(GameContext);
 const Game: Component = () => {
   const game = useGameContext();
   return (
-    <div class={styles.layout}>
+    <div>
       <header>Mastermind</header>
-      <div class={styles.layoutContent}>
-        <div class={styles.board}>
-          <Index each={Array.from({ length: game.maxAttempts() })}>
-            {(_, index) => (
-              <GuessViewer
-                active={() => game.currentAttempt() === index}
-                rank={index}
-                value={() => game.getAttempt(index)}
-                lead={() => game.getLead(index)}
-              />
-            )}
-          </Index>
-        </div>
+      <div class={styles.board}>
+        <Index each={Array.from({ length: game.maxAttempts() })}>
+          {(_, index) => (
+            <GuessViewer
+              active={() => game.currentAttempt() === index}
+              rank={index}
+              value={() => game.getAttempt(index)}
+              lead={() => game.getLead(index)}
+            />
+          )}
+        </Index>
       </div>
-      <div>
-        <Panel visible={game.status() === "on"}>
-          <Keyboard />
-        </Panel>
-        <Panel visible={game.status() === "win"}>
-          <WinPanel />
-        </Panel>
-        <Panel visible={game.status() === "lose"}>
-          <LosePanel />
-        </Panel>
-      </div>
+      <Panel visible={game.status() === "on"}>
+        <Keyboard />
+      </Panel>
+      <Panel visible={game.status() === "win"}>
+        <WinPanel />
+      </Panel>
+      <Panel visible={game.status() === "lose"}>
+        <LosePanel />
+      </Panel>
     </div>
   );
 };
-
 const DarkThemeToggle: Component = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

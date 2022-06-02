@@ -1,5 +1,4 @@
 import { Accessor, createSignal, onMount } from "solid-js";
-import { calculateLeads } from "./calculateLeads";
 import {
   ALL_COLORS,
   Choice,
@@ -40,8 +39,34 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
 
   const submit = () => {
     const sequence = lineEditor.value();
+    if (sequence.length !== params.size) return;
 
-    const lead = calculateLeads(goal(), sequence);
+    let lead: Lead = {
+      position: 0,
+      color: 0,
+    };
+    const usage = Array.from({ length: params.size }, () => false);
+
+    goal().forEach((target, index) => {
+      if (target === sequence[index]) {
+        lead.position += 1;
+        usage[index] = true;
+      }
+    });
+    usage.forEach((used, index) => {
+      if (used) {
+        return;
+      }
+      const target = sequence[index];
+      const indexMatched = goal().findIndex(
+        (color, j) => !usage[j] && color === target
+      );
+      if (indexMatched >= 0) {
+        lead.color += 1;
+        usage[indexMatched] = true;
+      }
+    });
+
     const attemptsCount = attempts().length;
 
     if (lead.position === params.size) {
@@ -56,12 +81,12 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
   };
 
   return {
-    currentAttempt: current,
+		currentAttempt: current,
     start,
     select: lineEditor.select,
     deselect: lineEditor.deselect,
     isSubmitable: lineEditor.ready,
-    isEmpty: lineEditor.empty,
+		isEmpty: lineEditor.empty,
     submit,
     getLead(index: number): Lead {
       const lead = leads()[index];
@@ -99,8 +124,8 @@ const useLineEditor = (size: number) => {
     setEditor([]);
   };
 
-  const ready = () => editor().length === size;
-  const empty = () => editor().length === 0;
+	const ready = () => editor().length === size
+	const empty = () => editor().length === 0
 
   return { value: editor, select, deselect, clear, ready, empty };
 };

@@ -10,16 +10,17 @@ import {
   useContext,
 } from "solid-js";
 
-import styles from "./App.module.css";
 import { ALL_COLORS, Choice, Lead, Line } from "./game/types";
 import { useGame } from "./game/useGame";
+import "./App.css";
 
 const App: Component = () => {
   const game = useGame({ maxAttempts: 6, size: 4 });
   const [dark, setDark] = createSignal(prefersDarkScheme());
+
   return (
-    <div class={[styles.App, dark() ? styles.dark : ""].join(" ")}>
-      <div class={styles.themeToggle} onClick={() => setDark((s) => !s)}>
+    <div class={dark() ? "App dark" : "App"}>
+      <div class="themeToggle" onClick={() => setDark((s) => !s)}>
         <DarkThemeToggle />
       </div>
       <GameContext.Provider value={game}>
@@ -42,11 +43,11 @@ const App: Component = () => {
 export default App;
 
 const prefersDarkScheme = () => {
-	if (window !== undefined) {
-		return window.matchMedia("(prefers-color-scheme:dark)").matches
-	}
-	return false
-}
+  if (window !== undefined) {
+    return window.matchMedia("(prefers-color-scheme:dark)").matches;
+  }
+  return false;
+};
 
 const GameContext = createContext<ReturnType<typeof useGame>>({
   status: () => "idle",
@@ -71,7 +72,7 @@ const Game: Component = () => {
   return (
     <div>
       <header>Mastermind</header>
-      <div class={styles.board}>
+      <div class="board">
         <Index each={Array.from({ length: game.maxAttempts() })}>
           {(_, index) => (
             <GuessViewer
@@ -148,11 +149,9 @@ const ChoiceView: Component<{
 }> = (props) => {
   return (
     <div
-      class={[
-        styles.circle,
-        styles[props.value()],
-        props.active() ? styles.active : "",
-      ].join(" ")}
+      class={["circle", props.value(), props.active() ? "active" : ""].join(
+        " "
+      )}
     />
   );
 };
@@ -179,15 +178,15 @@ const LeadViewer: Component<{
   };
 
   return (
-    <div class={styles.leads}>
+    <div class="leads">
       <Index each={leads()}>
         {(lead) => (
           <div
             class={[
-              styles.lead,
-              styles.circle,
-              styles[lead()],
-              props.active() ? styles.active : "",
+              "lead",
+              "circle",
+              lead(),
+              props.active() ? "active" : "",
             ].join(" ")}
           />
         )}
@@ -198,7 +197,7 @@ const LeadViewer: Component<{
 
 const Panel: Component<{ visible: boolean }> = (props) => {
   return (
-    <div class={[styles.panel, !props.visible ? styles.hidden : ""].join(" ")}>
+    <div class={["panel", !props.visible ? "hidden" : ""].join(" ")}>
       {props.children}
     </div>
   );
@@ -206,27 +205,27 @@ const Panel: Component<{ visible: boolean }> = (props) => {
 const Keyboard: Component = () => {
   const game = useGameContext();
   return (
-    <div class={styles.keyboard}>
-      <div class={styles.keylayout}>
+    <div class={"keyboard"}>
+      <div class={"keylayout"}>
         <For each={ALL_COLORS}>
           {(color) => (
             <button
               onClick={() => game.select(color)}
-              class={[styles.circle, styles[color]].join(" ")}
+              class={["circle", color].join(" ")}
             />
           )}
         </For>
       </div>
-      <div class={styles.actions}>
+      <div class="actions">
         <button
-          class={[styles.action, styles.enter].join(" ")}
+          class="action enter"
           disabled={!game.isSubmitable()}
           onClick={game.submit}
         >
           Enter
         </button>
         <button
-          class={[styles.action, styles.delete].join(" ")}
+          class="action delete"
           disabled={game.isEmpty()}
           onClick={game.deselect}
         >
@@ -240,9 +239,9 @@ const Keyboard: Component = () => {
 const WinPanel: Component = () => {
   const game = useGameContext();
   return (
-    <div class={[styles.notification].join(" ")}>
+    <div class="notification">
       <p>You made it in {game.currentAttempt()}!</p>
-      <button class={styles.action} onClick={game.start}>
+      <button class="action" onClick={game.start}>
         New Game
       </button>
     </div>
@@ -252,11 +251,11 @@ const WinPanel: Component = () => {
 const LosePanel: Component = () => {
   const game = useGameContext();
   return (
-    <div class={[styles.notification].join(" ")}>
-      <div class={styles.sequence}>
+    <div class="notification">
+      <div class="sequence">
         <SequenceViewer active={() => false} value={game.goal} />
       </div>
-      <button class={styles.action} onClick={game.start}>
+      <button class="action" onClick={game.start}>
         New Game
       </button>
     </div>

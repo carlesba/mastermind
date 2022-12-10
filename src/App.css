@@ -84,10 +84,12 @@ header {
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 1vh;
   width: 50vh;
+  max-width: 90vw;
 }
 
 .keyboard .actions {
   width: 50vh;
+  max-width: 90vw;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 2vh;
@@ -133,6 +135,7 @@ button.action {
 
 .board {
   width: 50vh;
+  max-width: 90vw;
   display: grid;
   grid-template-columns: repeat(4, 1fr) 1.3fr;
   row-gap: 1vh;

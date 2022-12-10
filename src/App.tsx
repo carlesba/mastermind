@@ -51,24 +51,6 @@ const prefersDarkScheme = () => {
   return false;
 };
 
-// const GameContext = createContext<ReturnType<typeof useGame>>({
-//   status: () => "idle",
-//   start: () => {},
-//   size: () => 0,
-//   select: () => {},
-//   deselect: () => {},
-//   isEmpty: () => true,
-//   isSubmitable: () => false,
-//   submit: () => {},
-//   goal: () => [],
-//   getAttempt: () => [],
-//   currentAttempt: () => 0,
-//   maxAttempts: () => 0,
-//   getLead: () => ({ position: 0, color: 0 }),
-// });
-
-// const useGameContext = () => useContext(GameContext);
-
 const Game: Component = () => {
   return (
     <div>

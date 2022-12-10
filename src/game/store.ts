@@ -19,7 +19,7 @@ type GameState = {
   current: number;
 };
 
-export const useGame = (params: { size: number; maxAttempts: number }) => {
+export const createGameStore = (params: { size: number; maxAttempts: number }) => {
   const [store, setStore] = createStore<GameState>({
     current: 0,
     goal: [],
@@ -28,7 +28,7 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
     status: "idle",
   });
 
-  const lineEditor = useLineEditor(params.size);
+  const lineEditor = createLineEditorStore(params.size);
 
   const emptyAttempt = (): Choice[] =>
     Array.from({ length: params.size }, () => "void");
@@ -118,7 +118,7 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
   };
 };
 
-const useLineEditor = (size: number) => {
+const createLineEditorStore = (size: number) => {
   const [editor, setEditor] = createSignal<Guess>([]);
 
   const select = (color: Color) => {

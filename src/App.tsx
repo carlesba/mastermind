@@ -10,16 +10,16 @@ import {
 } from "solid-js";
 
 import { ALL_COLORS, Choice, Lead, Line } from "./game/types";
-import { useGame } from "./game/useGame";
+import { createGameStore } from "./game/store";
 import "./App.css";
 
-const game = useGame({ maxAttempts: 6, size: 4 });
+const gameStore = createGameStore({ maxAttempts: 6, size: 4 });
 
 const App: Component = () => {
   const [dark, setDark] = createSignal(prefersDarkScheme());
 
   onMount(() => {
-    game.start();
+    gameStore.start();
   });
 
   return (
@@ -28,10 +28,10 @@ const App: Component = () => {
         <DarkThemeToggle />
       </div>
       <Switch fallback={<Game />}>
-        <Match when={game.status === "idle"}>
+        <Match when={gameStore.status === "idle"}>
           <button
             onClick={() => {
-              game.start();
+              gameStore.start();
             }}
           >
             start a new game
@@ -74,24 +74,24 @@ const Game: Component = () => {
     <div>
       <header>Mastermind</header>
       <div class="board">
-        <Index each={Array.from({ length: game.maxAttempts() })}>
+        <Index each={Array.from({ length: gameStore.maxAttempts() })}>
           {(_, index) => (
             <GuessViewer
-              active={game.currentAttempt === index}
+              active={gameStore.currentAttempt === index}
               rank={index}
-              value={game.getAttempt(index)}
-              lead={game.getLead(index)}
+              value={gameStore.getAttempt(index)}
+              lead={gameStore.getLead(index)}
             />
           )}
         </Index>
       </div>
-      <Panel visible={game.status === "on"}>
+      <Panel visible={gameStore.status === "on"}>
         <Keyboard />
       </Panel>
-      <Panel visible={game.status === "win"}>
+      <Panel visible={gameStore.status === "win"}>
         <WinPanel />
       </Panel>
-      <Panel visible={game.status === "lose"}>
+      <Panel visible={gameStore.status === "lose"}>
         <LosePanel />
       </Panel>
     </div>
@@ -150,9 +150,7 @@ const ChoiceView: Component<{
 }> = (props) => {
   return (
     <div
-      class={["circle", props.value, props.active ? "active" : ""].join(
-        " "
-      )}
+      class={["circle", props.value, props.active ? "active" : ""].join(" ")}
     />
   );
 };
@@ -163,7 +161,7 @@ const LeadViewer: Component<{
 }> = (props) => {
   const leads = () => {
     let { position, color } = props.value;
-    return Array.from({ length: game.size() }, () => {
+    return Array.from({ length: gameStore.size() }, () => {
       if (position > 0) {
         position -= 1;
         return "position";
@@ -210,7 +208,7 @@ const Keyboard: Component = () => {
         <For each={ALL_COLORS}>
           {(color) => (
             <button
-              onClick={() => game.select(color)}
+              onClick={() => gameStore.select(color)}
               class={["circle", color].join(" ")}
             />
           )}
@@ -219,15 +217,15 @@ const Keyboard: Component = () => {
       <div class="actions">
         <button
           class="action enter"
-          disabled={!game.isSubmitable()}
-          onClick={game.submit}
+          disabled={!gameStore.isSubmitable()}
+          onClick={gameStore.submit}
         >
           Enter
         </button>
         <button
           class="action delete"
-          disabled={game.isEmpty()}
-          onClick={game.deselect}
+          disabled={gameStore.isEmpty()}
+          onClick={gameStore.deselect}
         >
           Delete
         </button>
@@ -239,8 +237,8 @@ const Keyboard: Component = () => {
 const WinPanel: Component = () => {
   return (
     <div class="notification">
-      <p>You made it in {game.currentAttempt}!</p>
-      <button class="action" onClick={game.start}>
+      <p>You made it in {gameStore.currentAttempt}!</p>
+      <button class="action" onClick={gameStore.start}>
         New Game
       </button>
     </div>
@@ -251,9 +249,9 @@ const LosePanel: Component = () => {
   return (
     <div class="notification">
       <div class="sequence">
-        <SequenceViewer active={false} value={game.goal} />
+        <SequenceViewer active={false} value={gameStore.goal} />
       </div>
-      <button class="action" onClick={game.start}>
+      <button class="action" onClick={gameStore.start}>
         New Game
       </button>
     </div>

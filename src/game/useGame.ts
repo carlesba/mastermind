@@ -1,4 +1,6 @@
-import { Accessor, createSignal, onMount } from "solid-js";
+import { createSignal } from "solid-js";
+import { createStore } from "solid-js/store";
+import { match } from "ts-pattern";
 import {
   ALL_COLORS,
   Choice,
@@ -9,32 +11,37 @@ import {
   Line,
 } from "./types";
 
+type GameState = {
+  goal: Color[];
+  attempts: Guess[];
+  leads: Lead[];
+  status: GameStatus;
+  current: number;
+};
+
 export const useGame = (params: { size: number; maxAttempts: number }) => {
-  const [goal, setGoal] = createSignal<Color[]>([]);
-  const [attempts, setAttempts] = createSignal<Guess[]>([]);
-  const [leads, setLeads] = createSignal<Lead[]>([]);
-  const [status, setStatus] = createSignal<GameStatus>("idle");
-
-  const lineEditor = useLineEditor(params.size);
-
-  const [current, setCurrent] = createSignal<number>(0);
-
-  onMount(() => {
-    start();
+  const [store, setStore] = createStore<GameState>({
+    current: 0,
+    goal: [],
+    attempts: [],
+    leads: [],
+    status: "idle",
   });
 
-  const size: Accessor<number> = () => params.size;
+  const lineEditor = useLineEditor(params.size);
 
   const emptyAttempt = (): Choice[] =>
     Array.from({ length: params.size }, () => "void");
 
   const start = () => {
     const newGoal = createGoal(params.size);
-    setCurrent(0);
-    setGoal(newGoal);
-    setAttempts([]);
-    setLeads([]);
-    setStatus("on");
+    setStore({
+      current: 0,
+      goal: newGoal,
+      attempts: [],
+      leads: [],
+      status: "on",
+    });
   };
 
   const submit = () => {
@@ -47,7 +54,7 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
     };
     const usage = Array.from({ length: params.size }, () => false);
 
-    goal().forEach((target, index) => {
+    store.goal.forEach((target, index) => {
       if (target === sequence[index]) {
         lead.position += 1;
         usage[index] = true;
@@ -58,7 +65,7 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
         return;
       }
       const target = sequence[index];
-      const indexMatched = goal().findIndex(
+      const indexMatched = store.goal.findIndex(
         (color, j) => !usage[j] && color === target
       );
       if (indexMatched >= 0) {
@@ -67,45 +74,47 @@ export const useGame = (params: { size: number; maxAttempts: number }) => {
       }
     });
 
-    const attemptsCount = attempts().length;
-
-    if (lead.position === params.size) {
-      setStatus("win");
-    } else if (attemptsCount === params.maxAttempts - 1) {
-      setStatus("lose");
-    }
-    setCurrent((c) => c + 1);
-    setAttempts((a) => a.concat([sequence]));
-    setLeads((l) => l.concat([lead]));
+    setStore((s) => ({
+      status: match<any, GameStatus>({
+        correctPositions: lead.position,
+        lastAttempt: params.maxAttempts - 1,
+      })
+        .with({ correctPositions: params.size }, () => "win")
+        .with({ lastAttempt: s.attempts.length }, () => "lose")
+        .otherwise(() => s.status),
+      current: s.current + 1,
+      attempts: s.attempts.concat([sequence]),
+      leads: s.leads.concat([lead]),
+    }));
     lineEditor.clear();
   };
 
   return {
-		currentAttempt: current,
+    size: () => params.size,
+    currentAttempt: store.current,
     start,
     select: lineEditor.select,
     deselect: lineEditor.deselect,
     isSubmitable: lineEditor.ready,
-		isEmpty: lineEditor.empty,
+    isEmpty: lineEditor.empty,
     submit,
     getLead(index: number): Lead {
-      const lead = leads()[index];
+      const lead = store.leads[index];
       return lead || { position: 0, color: 0 };
     },
     getAttempt(index: number): Line {
-      if (current() === index) {
+      if (store.current === index) {
         const value = lineEditor.value();
         return Array.from(
           { length: params.size },
           (_, i) => value[i] || "void"
         );
       }
-      return attempts()[index] || emptyAttempt();
+      return store.attempts[index] || emptyAttempt();
     },
-    goal,
-    size,
+    goal: store.goal,
     maxAttempts: () => params.maxAttempts,
-    status,
+    status: store.status,
   };
 };
 
@@ -124,8 +133,8 @@ const useLineEditor = (size: number) => {
     setEditor([]);
   };
 
-	const ready = () => editor().length === size
-	const empty = () => editor().length === 0
+  const ready = () => editor().length === size;
+  const empty = () => editor().length === 0;
 
   return { value: editor, select, deselect, clear, ready, empty };
 };

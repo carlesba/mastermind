@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "eslint": "^8.19.0",
-    "solid-js": "^1.4.6"
+    "solid-js": "^1.4.6",
+    "ts-pattern": "^4.0.6"
   }
 }

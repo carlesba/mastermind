@@ -1,41 +1,43 @@
 import {
-  Accessor,
   Component,
-  createContext,
   createSignal,
   For,
   Index,
+  JSXElement,
   Match,
+  onMount,
   Switch,
-  useContext,
 } from "solid-js";
 
 import { ALL_COLORS, Choice, Lead, Line } from "./game/types";
 import { useGame } from "./game/useGame";
 import "./App.css";
 
+const game = useGame({ maxAttempts: 6, size: 4 });
+
 const App: Component = () => {
-  const game = useGame({ maxAttempts: 6, size: 4 });
   const [dark, setDark] = createSignal(prefersDarkScheme());
+
+  onMount(() => {
+    game.start();
+  });
 
   return (
     <div class={dark() ? "App dark" : "App"}>
       <div class="themeToggle" onClick={() => setDark((s) => !s)}>
         <DarkThemeToggle />
       </div>
-      <GameContext.Provider value={game}>
-        <Switch fallback={<Game />}>
-          <Match when={game.status() === "idle"}>
-            <button
-              onClick={() => {
-                game.start();
-              }}
-            >
-              start a new game
-            </button>
-          </Match>
-        </Switch>
-      </GameContext.Provider>
+      <Switch fallback={<Game />}>
+        <Match when={game.status === "idle"}>
+          <button
+            onClick={() => {
+              game.start();
+            }}
+          >
+            start a new game
+          </button>
+        </Match>
+      </Switch>
     </div>
   );
 };
@@ -49,26 +51,25 @@ const prefersDarkScheme = () => {
   return false;
 };
 
-const GameContext = createContext<ReturnType<typeof useGame>>({
-  status: () => "idle",
-  start: () => {},
-  size: () => 0,
-  select: () => {},
-  deselect: () => {},
-  isEmpty: () => true,
-  isSubmitable: () => false,
-  submit: () => {},
-  goal: () => [],
-  getAttempt: () => [],
-  currentAttempt: () => 0,
-  maxAttempts: () => 0,
-  getLead: () => ({ position: 0, color: 0 }),
-});
+// const GameContext = createContext<ReturnType<typeof useGame>>({
+//   status: () => "idle",
+//   start: () => {},
+//   size: () => 0,
+//   select: () => {},
+//   deselect: () => {},
+//   isEmpty: () => true,
+//   isSubmitable: () => false,
+//   submit: () => {},
+//   goal: () => [],
+//   getAttempt: () => [],
+//   currentAttempt: () => 0,
+//   maxAttempts: () => 0,
+//   getLead: () => ({ position: 0, color: 0 }),
+// });
 
-const useGameContext = () => useContext(GameContext);
+// const useGameContext = () => useContext(GameContext);
 
 const Game: Component = () => {
-  const game = useGameContext();
   return (
     <div>
       <header>Mastermind</header>
@@ -76,21 +77,21 @@ const Game: Component = () => {
         <Index each={Array.from({ length: game.maxAttempts() })}>
           {(_, index) => (
             <GuessViewer
-              active={() => game.currentAttempt() === index}
+              active={game.currentAttempt === index}
               rank={index}
-              value={() => game.getAttempt(index)}
-              lead={() => game.getLead(index)}
+              value={game.getAttempt(index)}
+              lead={game.getLead(index)}
             />
           )}
         </Index>
       </div>
-      <Panel visible={game.status() === "on"}>
+      <Panel visible={game.status === "on"}>
         <Keyboard />
       </Panel>
-      <Panel visible={game.status() === "win"}>
+      <Panel visible={game.status === "win"}>
         <WinPanel />
       </Panel>
-      <Panel visible={game.status() === "lose"}>
+      <Panel visible={game.status === "lose"}>
         <LosePanel />
       </Panel>
     </div>
@@ -120,9 +121,9 @@ const DarkThemeToggle: Component = () => (
 
 const GuessViewer: Component<{
   rank: number;
-  active: Accessor<boolean>;
-  value: Accessor<Line>;
-  lead: Accessor<Lead>;
+  active: boolean;
+  value: Line;
+  lead: Lead;
 }> = (props) => {
   return (
     <>
@@ -133,23 +134,23 @@ const GuessViewer: Component<{
 };
 
 const SequenceViewer: Component<{
-  value: Accessor<Line>;
-  active: Accessor<boolean>;
+  value: Line;
+  active: boolean;
 }> = (props) => {
   return (
-    <Index each={props.value()}>
-      {(choice) => <ChoiceView active={props.active} value={choice} />}
+    <Index each={props.value}>
+      {(choice) => <ChoiceView active={props.active} value={choice()} />}
     </Index>
   );
 };
 
 const ChoiceView: Component<{
-  value: Accessor<Choice>;
-  active: Accessor<boolean>;
+  value: Choice;
+  active: boolean;
 }> = (props) => {
   return (
     <div
-      class={["circle", props.value(), props.active() ? "active" : ""].join(
+      class={["circle", props.value, props.active ? "active" : ""].join(
         " "
       )}
     />
@@ -157,14 +158,12 @@ const ChoiceView: Component<{
 };
 
 const LeadViewer: Component<{
-  value: Accessor<Lead>;
-  active: Accessor<boolean>;
+  value: Lead;
+  active: boolean;
 }> = (props) => {
-  const { size } = useGameContext();
-
   const leads = () => {
-    let { position, color } = props.value();
-    return Array.from({ length: size() }, () => {
+    let { position, color } = props.value;
+    return Array.from({ length: game.size() }, () => {
       if (position > 0) {
         position -= 1;
         return "position";
@@ -186,7 +185,7 @@ const LeadViewer: Component<{
               "lead",
               "circle",
               lead(),
-              props.active() ? "active" : "",
+              props.active ? "active" : "",
             ].join(" ")}
           />
         )}
@@ -195,7 +194,9 @@ const LeadViewer: Component<{
   );
 };
 
-const Panel: Component<{ visible: boolean }> = (props) => {
+const Panel: Component<{ visible: boolean; children: JSXElement }> = (
+  props
+) => {
   return (
     <div class={["panel", !props.visible ? "hidden" : ""].join(" ")}>
       {props.children}
@@ -203,10 +204,9 @@ const Panel: Component<{ visible: boolean }> = (props) => {
   );
 };
 const Keyboard: Component = () => {
-  const game = useGameContext();
   return (
-    <div class={"keyboard"}>
-      <div class={"keylayout"}>
+    <div class="keyboard">
+      <div class="keylayout">
         <For each={ALL_COLORS}>
           {(color) => (
             <button
@@ -237,10 +237,9 @@ const Keyboard: Component = () => {
 };
 
 const WinPanel: Component = () => {
-  const game = useGameContext();
   return (
     <div class="notification">
-      <p>You made it in {game.currentAttempt()}!</p>
+      <p>You made it in {game.currentAttempt}!</p>
       <button class="action" onClick={game.start}>
         New Game
       </button>
@@ -249,11 +248,10 @@ const WinPanel: Component = () => {
 };
 
 const LosePanel: Component = () => {
-  const game = useGameContext();
   return (
     <div class="notification">
       <div class="sequence">
-        <SequenceViewer active={() => false} value={game.goal} />
+        <SequenceViewer active={false} value={game.goal} />
       </div>
       <button class="action" onClick={game.start}>
         New Game

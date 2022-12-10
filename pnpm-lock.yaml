@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   eslint: ^8.19.0
   solid-js: ^1.4.6
+  ts-pattern: ^4.0.6
   typescript: ^4.7.4
   vite: ^2.9.13
   vite-plugin-solid: ^2.2.6
@@ -10,6 +11,7 @@ specifiers:
 dependencies:
   eslint: 8.19.0
   solid-js: 1.4.6
+  ts-pattern: 4.0.6
 
 devDependencies:
   typescript: 4.7.4
@@ -1307,6 +1309,10 @@ packages:
     resolution: {integrity: sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=}
     engines: {node: '>=4'}
     dev: true
+
+  /ts-pattern/4.0.6:
+    resolution: {integrity: sha512-sFHQYD4KoysBi7e7a2mzDPvRBeqA4w+vEyRE+P5MU9VLq8eEYxgKCgD9RNEAT+itGRWUTYN+hry94GDPLb1/Yw==}
+    dev: false
 
   /ts-toolbelt/9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}

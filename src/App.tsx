@@ -28,7 +28,7 @@ const App: Component = () => {
         <DarkThemeToggle />
       </div>
       <Switch fallback={<Game />}>
-        <Match when={gameStore.status === "idle"}>
+        <Match when={gameStore.status() === "idle"}>
           <button
             onClick={() => {
               gameStore.start();
@@ -59,7 +59,7 @@ const Game: Component = () => {
         <Index each={Array.from({ length: gameStore.maxAttempts() })}>
           {(_, index) => (
             <GuessViewer
-              active={gameStore.currentAttempt === index}
+              active={gameStore.currentAttempt() === index}
               rank={index}
               value={gameStore.getAttempt(index)}
               lead={gameStore.getLead(index)}
@@ -67,13 +67,13 @@ const Game: Component = () => {
           )}
         </Index>
       </div>
-      <Panel visible={gameStore.status === "on"}>
+      <Panel visible={gameStore.status() === "on"}>
         <Keyboard />
       </Panel>
-      <Panel visible={gameStore.status === "win"}>
+      <Panel visible={gameStore.status() === "win"}>
         <WinPanel />
       </Panel>
-      <Panel visible={gameStore.status === "lose"}>
+      <Panel visible={gameStore.status() === "lose"}>
         <LosePanel />
       </Panel>
     </div>
@@ -231,7 +231,7 @@ const LosePanel: Component = () => {
   return (
     <div class="notification">
       <div class="sequence">
-        <SequenceViewer active={false} value={gameStore.goal} />
+        <SequenceViewer active={false} value={gameStore.goal()} />
       </div>
       <button class="action" onClick={gameStore.start}>
         New Game

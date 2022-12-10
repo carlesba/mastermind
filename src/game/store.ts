@@ -19,7 +19,10 @@ type GameState = {
   current: number;
 };
 
-export const createGameStore = (params: { size: number; maxAttempts: number }) => {
+export const createGameStore = (params: {
+  size: number;
+  maxAttempts: number;
+}) => {
   const [store, setStore] = createStore<GameState>({
     current: 0,
     goal: [],
@@ -35,13 +38,14 @@ export const createGameStore = (params: { size: number; maxAttempts: number }) =
 
   const start = () => {
     const newGoal = createGoal(params.size);
-    setStore({
+
+    setStore(() => ({
       current: 0,
       goal: newGoal,
       attempts: [],
       leads: [],
       status: "on",
-    });
+    }));
   };
 
   const submit = () => {
@@ -91,7 +95,6 @@ export const createGameStore = (params: { size: number; maxAttempts: number }) =
 
   return {
     size: () => params.size,
-    currentAttempt: store.current,
     start,
     select: lineEditor.select,
     deselect: lineEditor.deselect,
@@ -112,9 +115,10 @@ export const createGameStore = (params: { size: number; maxAttempts: number }) =
       }
       return store.attempts[index] || emptyAttempt();
     },
-    goal: store.goal,
+    currentAttempt: () => store.current,
     maxAttempts: () => params.maxAttempts,
-    status: store.status,
+    goal: () => store.goal,
+    status: () => store.status,
   };
 };
 

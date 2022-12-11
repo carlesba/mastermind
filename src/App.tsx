@@ -9,8 +9,8 @@ import {
   Switch,
 } from "solid-js";
 
-import { ALL_COLORS, Choice, Lead, Line } from "./game/types";
-import { createGameStore } from "./game/store";
+import { ALL_COLORS, Choice, Lead, Line } from "./types";
+import { createGameStore } from "./game";
 import "./App.css";
 
 const gameStore = createGameStore({ maxAttempts: 6, size: 4 });

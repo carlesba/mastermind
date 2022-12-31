@@ -5,6 +5,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
+    "test": "vitest",
     "build": "vite build",
     "serve": "vite preview"
   },
@@ -12,7 +13,8 @@
   "devDependencies": {
     "typescript": "^4.7.4",
     "vite": "^2.9.13",
-    "vite-plugin-solid": "^2.2.6"
+    "vite-plugin-solid": "^2.2.6",
+    "vitest": "^0.26.2"
   },
   "dependencies": {
     "eslint": "^8.19.0",

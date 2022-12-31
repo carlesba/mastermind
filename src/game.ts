@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { match } from "ts-pattern";
+import { calculateLeads } from "./calculateLeads";
 import {
   ALL_COLORS,
   Choice,
@@ -52,31 +53,7 @@ export const createGameStore = (params: {
     const sequence = lineEditor.value();
     if (sequence.length !== params.size) return;
 
-    let lead: Lead = {
-      position: 0,
-      color: 0,
-    };
-    const usage = Array.from({ length: params.size }, () => false);
-
-    store.goal.forEach((target, index) => {
-      if (target === sequence[index]) {
-        lead.position += 1;
-        usage[index] = true;
-      }
-    });
-    usage.forEach((used, index) => {
-      if (used) {
-        return;
-      }
-      const target = sequence[index];
-      const indexMatched = store.goal.findIndex(
-        (color, j) => !usage[j] && color === target
-      );
-      if (indexMatched >= 0) {
-        lead.color += 1;
-        usage[indexMatched] = true;
-      }
-    });
+    const lead = calculateLeads(store.goal, sequence);
 
     setStore((s) => ({
       status: match<any, GameStatus>({

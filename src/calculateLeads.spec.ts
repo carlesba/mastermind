@@ -7,7 +7,7 @@ function testGuess(
   goal: Color[],
   guess: Color[],
   position: number,
-  color: number,
+  color: number
 ) {
   test(description, () => {
     const lead = calculateLeads(goal, guess);
@@ -32,7 +32,7 @@ testGuess(
   ["green", "green", "green", "green"],
   4,
   0
-)
+);
 
 testGuess(
   "all color",
@@ -48,4 +48,20 @@ testGuess(
   ["blue", "blue", "green", "red"],
   1,
   3
+);
+
+testGuess(
+  "bug 2",
+  ["yellow", "yellow", "red", "red"],
+  ["yellow", "red", "yellow", "yellow"],
+  1,
+  2,
+);
+
+testGuess(
+  "bug 3",
+  ["blue", "green", "red", "yellow"],
+  ["green", "yellow", "green", "blue"],
+  0,
+  3,
 );

@@ -55,7 +55,7 @@ testGuess(
   ["yellow", "yellow", "red", "red"],
   ["yellow", "red", "yellow", "yellow"],
   1,
-  2,
+  2
 );
 
 testGuess(
@@ -63,5 +63,13 @@ testGuess(
   ["blue", "green", "red", "yellow"],
   ["green", "yellow", "green", "blue"],
   0,
-  3,
+  3
+);
+
+testGuess(
+  "bug 4",
+  ["blue", "green", "red", "yellow"],
+  ["pink", "yellow", "green", "yellow"],
+  1,
+  1
 );

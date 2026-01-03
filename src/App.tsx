@@ -249,7 +249,15 @@ const Keyboard: Component = () => {
         <button
           class="action enter"
           disabled={!gameStore.isSubmitable()}
-          onClick={gameStore.submit}
+          onClick={() => {
+            gameStore.submit();
+            setTimeout(() => {
+              const activeRow = document.querySelector(".circle.active");
+              if (activeRow) {
+                activeRow.scrollIntoView({ behavior: "smooth", block: "center" });
+              }
+            }, 100);
+          }}
         >
           Enter
         </button>
@@ -268,7 +276,7 @@ const Keyboard: Component = () => {
 const WinPanel: Component = () => {
   return (
     <div class="notification">
-      <p>You made it in {gameStore.currentAttempt}!</p>
+      <p>You made it in {gameStore.currentAttempt()}!</p>
       <button class="action" onClick={gameStore.start}>
         New Game
       </button>

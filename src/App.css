@@ -19,7 +19,7 @@
   --line-color-dim: #1c1b1f44;
 
   --header-height: 10vh;
-  --panel-height: 28vh;
+  --panel-height: 32vh;
 }
 * {
   touch-action: manipulation;
@@ -60,12 +60,14 @@ header {
   position: fixed;
   background: var(--bg);
   height: var(--panel-height);
+  min-height: fit-content;
   bottom: 0;
   width: 100vw;
-  padding: 4vh 0;
+  padding: 2vh 0;
   box-sizing: border-box;
   border-top: var(--line-width) solid var(--line-color-dim);
   transition: transform 200ms ease;
+  overflow: hidden;
 }
 .panel.hidden {
   transform: translateY(var(--panel-height));
@@ -74,26 +76,27 @@ header {
 .keyboard {
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-template-rows: 2fr 1fr;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2vh;
 }
 
 .keylayout {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-gap: 1vh;
-  width: 50vh;
-  max-width: 90vw;
+  gap: 1vh;
+  width: min(50vh, 90vw);
+  padding: 0 2vw;
 }
 
 .keyboard .actions {
-  width: 50vh;
-  max-width: 90vw;
+  width: min(50vh, 90vw);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 2vh;
-  justify-content: center;
+  gap: 1.5vh;
+  padding: 0 2vw;
 }
 
 button {
@@ -106,13 +109,18 @@ button:disabled {
   opacity: 0.6;
 }
 button.action {
-  padding: 2vh;
+  padding: 2vh 2vh;
   background: var(--fg);
   color: var(--bg);
-  border-radius: 2vh;
+  border-radius: 1.5vh;
   font-size: 2.5vh;
   font-weight: bold;
   text-transform: uppercase;
+  white-space: nowrap;
+  min-height: 7vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .blue {
@@ -198,6 +206,10 @@ button.action {
 .leads .circle {
   width: 70%;
 }
+.keylayout .circle {
+  width: 100%;
+  max-width: 10vh;
+}
 
 .lead.position {
   border-color: var(--lead-position);
@@ -250,4 +262,49 @@ button.action {
   width: 4vh;
   aspect-ratio: 1;
   stroke: var(--fg);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  :root {
+    --panel-height: 35vh;
+  }
+
+  .keyboard {
+    gap: 1vh;
+  }
+
+  .keylayout {
+    gap: 0.8vh;
+  }
+
+  .keyboard .actions {
+    gap: 1vh;
+  }
+
+  button.action {
+    padding: 1.5vh 1.5vh;
+    font-size: 2.2vh;
+    min-height: 6vh;
+  }
+}
+
+@media (max-height: 600px) {
+  :root {
+    --panel-height: 38vh;
+  }
+
+  .panel {
+    padding: 1.5vh 0;
+  }
+
+  .keyboard {
+    gap: 1vh;
+  }
+
+  button.action {
+    padding: 1.2vh 1.5vh;
+    font-size: 2vh;
+    min-height: 5vh;
+  }
 }

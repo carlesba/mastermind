@@ -17,6 +17,7 @@ const gameStore = createGameStore({ maxAttempts: 6, size: 4 });
 
 const App: Component = () => {
   const [dark, setDark] = createSignal(prefersDarkScheme());
+  const [showInstructions, setShowInstructions] = createSignal(false);
 
   onMount(() => {
     gameStore.start();
@@ -27,7 +28,13 @@ const App: Component = () => {
       <div class="themeToggle" onClick={() => setDark((s) => !s)}>
         <DarkThemeToggle />
       </div>
+      <div class="instructionsToggle" onClick={() => setShowInstructions(true)}>
+        <InstructionsIcon />
+      </div>
       <Switch fallback={<Game />}>
+        <Match when={showInstructions()}>
+          <InstructionsPanel onClose={() => setShowInstructions(false)} />
+        </Match>
         <Match when={gameStore.status() === "idle"}>
           <button
             onClick={() => {
@@ -98,6 +105,26 @@ const DarkThemeToggle: Component = () => (
     <line x1="12" y1="9" x2="16.65" y2="4.35" />
     <line x1="12" y1="14.3" x2="19.37" y2="6.93" />
     <line x1="12" y1="19.6" x2="20.85" y2="10.75" />
+  </svg>
+);
+
+const InstructionsIcon: Component = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="icon icon-tabler icon-tabler-help"
+    width="44"
+    height="44"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="#2c3e50"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <circle cx="12" cy="12" r="9" />
+    <line x1="12" y1="17" x2="12" y2="17.01" />
+    <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
   </svg>
 );
 
@@ -236,6 +263,72 @@ const LosePanel: Component = () => {
       <button class="action" onClick={gameStore.start}>
         New Game
       </button>
+    </div>
+  );
+};
+
+const InstructionsPanel: Component<{ onClose: () => void }> = (props) => {
+  return (
+    <div class="instructions">
+      <header>How to Play</header>
+      <div class="instructions-content">
+        <section>
+          <h2>Objective</h2>
+          <p>
+            Guess the secret color combination in as few attempts as possible.
+            You have 6 attempts to crack the code.
+          </p>
+        </section>
+
+        <section>
+          <h2>How to Play</h2>
+          <ol>
+            <li>Select 4 colors from the keyboard to make your guess</li>
+            <li>Press "Enter" to submit your guess</li>
+            <li>Check the feedback indicators on the right</li>
+            <li>Use the feedback to refine your next guess</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Feedback Indicators</h2>
+          <div class="feedback-examples">
+            <div class="feedback-item">
+              <div class="lead circle position" />
+              <p>
+                <strong>Red dot:</strong> Correct color in the correct position
+              </p>
+            </div>
+            <div class="feedback-item">
+              <div class="lead circle color" />
+              <p>
+                <strong>White/Black dot:</strong> Correct color but wrong
+                position
+              </p>
+            </div>
+            <div class="feedback-item">
+              <div class="lead circle void" />
+              <p>
+                <strong>Empty dot:</strong> This color is not in the solution
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Tips</h2>
+          <ul>
+            <li>Colors can repeat in the solution</li>
+            <li>Use your first guesses to test different colors</li>
+            <li>Pay close attention to the feedback after each guess</li>
+            <li>The order of feedback dots doesn't correspond to the order of your guess</li>
+          </ul>
+        </section>
+
+        <button class="action close-button" onClick={props.onClose}>
+          Close
+        </button>
+      </div>
     </div>
   );
 };

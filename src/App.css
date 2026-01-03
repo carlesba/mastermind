@@ -257,11 +257,108 @@ button.action {
   top: 0;
   width: 4vh;
   opacity: 0.8;
+  cursor: pointer;
 }
 .themeToggle svg {
   width: 4vh;
   aspect-ratio: 1;
   stroke: var(--fg);
+}
+
+.instructionsToggle {
+  position: fixed;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  left: 1vh;
+  top: 0;
+  width: 4vh;
+  opacity: 0.8;
+  cursor: pointer;
+}
+.instructionsToggle svg {
+  width: 4vh;
+  aspect-ratio: 1;
+  stroke: var(--fg);
+}
+
+.instructions {
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.instructions header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.instructions-content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2vh 4vw;
+  padding-bottom: 4vh;
+}
+
+.instructions-content section {
+  margin-bottom: 4vh;
+}
+
+.instructions-content h2 {
+  font-size: 3vh;
+  margin-top: 0;
+  margin-bottom: 2vh;
+  font-weight: bold;
+}
+
+.instructions-content p {
+  font-size: 2.2vh;
+  line-height: 1.6;
+  margin: 1vh 0;
+}
+
+.instructions-content ol,
+.instructions-content ul {
+  font-size: 2.2vh;
+  line-height: 1.8;
+  padding-left: 3vh;
+}
+
+.instructions-content li {
+  margin-bottom: 1vh;
+}
+
+.feedback-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  margin-top: 2vh;
+}
+
+.feedback-item {
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+}
+
+.feedback-item .circle {
+  width: 3vh;
+  height: 3vh;
+  flex-shrink: 0;
+}
+
+.feedback-item p {
+  margin: 0;
+  font-size: 2vh;
+}
+
+.close-button {
+  width: 100%;
+  margin-top: 2vh;
 }
 
 /* Mobile responsiveness */

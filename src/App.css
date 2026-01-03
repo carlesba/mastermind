@@ -308,3 +308,56 @@ button.action {
     min-height: 5vh;
   }
 }
+
+/* Safari-specific fixes */
+@supports (-webkit-hyphens: none) {
+  :root {
+    --panel-height: 28vh;
+  }
+
+  .panel {
+    padding: 1.5vh 0;
+  }
+
+  .keyboard {
+    gap: 1.5vh;
+  }
+
+  .keylayout .circle {
+    max-width: 8vh;
+  }
+
+  button.action {
+    padding: 1.5vh 2vh;
+    font-size: 2.2vh;
+    min-height: 6vh;
+  }
+
+  @media (max-width: 480px) {
+    :root {
+      --panel-height: 30vh;
+    }
+
+    .keyboard {
+      gap: 1vh;
+    }
+
+    button.action {
+      padding: 1.2vh 1.5vh;
+      font-size: 2vh;
+      min-height: 5.5vh;
+    }
+  }
+
+  @media (max-height: 600px) {
+    :root {
+      --panel-height: 32vh;
+    }
+
+    button.action {
+      padding: 1vh 1.2vh;
+      font-size: 1.8vh;
+      min-height: 4.5vh;
+    }
+  }
+}
